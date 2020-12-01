@@ -14,6 +14,7 @@ def cleanTableData(table):
     Returns:
         alldata: list of all data extracted
     """
+
     alldata = list()
     for row in table.findAll("tr")[1:]:
         data = []
@@ -49,7 +50,12 @@ def getListData(animelistlink):
     Parameter:
         animelistlink: the link of the webpage
     """
-    webpage = requests.get(animelistlink)
+
+    try:
+        webpage = requests.get(animelistlink, timeout=10)
+    except requests.exceptions.RequestException as e:
+        print(e)
+        return []
     soup = BeautifulSoup(webpage.text, features='html.parser')
     table = soup.find("table", {"class": "top-ranking-table"})
     return cleanTableData(table)
@@ -88,7 +94,7 @@ def getTopAnimeDataFrame(num=200, save_csv=True, csv_dir='Data/'):
     """
     Scrapes list of all top 'num' anime from the passed link 'anime_toplist_link'
     and returns the extracted data as a pandas DataFrame.
-    Also, saves the file to a 'csv' if 'save_csv' set to True.
+    Also, saves a csv file if 'save_csv' set to True.
 
     Parameters:
         num: the number of animes to scrape detail of
