@@ -1,3 +1,4 @@
+import os
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -49,7 +50,7 @@ def getListData(animelistlink):
         animelistlink: the link of the webpage
     """
     webpage = requests.get(animelistlink)
-    soup = BeautifulSoup(webpage.text)
+    soup = BeautifulSoup(webpage.text, features='html.parser')
     table = soup.find("table", {"class": "top-ranking-table"})
     return cleanTableData(table)
 
@@ -83,7 +84,7 @@ def getTopData(anime_toplist_link, topnum=200):
     return alldata
 
 
-def getTopAnimeDataFrame(num=200, save_csv=True, csv_filepath=''):
+def getTopAnimeDataFrame(num=200, save_csv=True, csv_dir='Data/'):
     """
     Scrapes list of all top 'num' anime from the passed link 'anime_toplist_link'
     and returns the extracted data as a pandas DataFrame.
@@ -92,16 +93,25 @@ def getTopAnimeDataFrame(num=200, save_csv=True, csv_filepath=''):
     Parameters:
         num: the number of animes to scrape detail of
         save_csv: Boolean, save the csv or not
-        csv_filepath: the filepath to save the csv file to
+        csv_dir: the directory to save the csv file in
     Returns:
         dataframe: the dataframe containing the scraped data as a table
     """
 
     anime_toplist_link = "https://myanimelist.net/topanime.php?limit="
     animedata = getTopData(anime_toplist_link, num)
+
+    # Creates the pandas DataFrame
     columns = ['Ranking', 'Anime Title', 'MAL Link', 'Airing Type and Episode',
                'Airing Time', 'No. of Members', 'MAL Score']
     dataframe = pd.DataFrame(animedata, columns=columns)
+
+    # Saves the csv.
     if save_csv:
-        dataframe.to_csv(csv_filepath+f'Top {num} Anime MAL.csv', index=False)
+        csv_filename = f'Top {num} Anime MAL.csv'
+        if not os.path.exists(csv_dir):
+            os.mkdir(csv_dir)
+        fullname = os.path.join(csv_dir, csv_filename)
+        dataframe.to_csv(fullname, index=False)
+
     return dataframe
