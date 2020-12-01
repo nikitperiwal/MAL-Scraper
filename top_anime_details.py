@@ -3,7 +3,6 @@ import time
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
-from concurrent.futures import ThreadPoolExecutor
 
 
 def cleanSidePanel(sidepanel):
@@ -40,7 +39,8 @@ def getAnimeDetail(animelink):
     try:
         webpage = requests.get(animelink, timeout=10)
     except requests.exceptions.RequestException as e:
-        print(e)
+        print("Link: ", animelink)
+        print("Exception: ", e, "\n")
         return None
     soup = BeautifulSoup(webpage.text, features="html.parser")
     sidepanel = soup.find("td", {"class": "borderClass"}).find('div').findAll('div')[6:]
@@ -49,9 +49,50 @@ def getAnimeDetail(animelink):
     return data
 
 
+def cleanDataFrame(df):
+    """
+    Cleans the DataFrame passed, to make the values more readable.
+
+    Parameter:
+        df: the dataframe to clean
+    Returns:
+        df: the cleaned dataframe
+    """
+    # Function to remove extra spaces from the cell inbetween items
+    def cleanDivide(cell):
+        cell = cell.split(',')
+        for i in range(len(cell)):
+            cell[i] = cell[i].strip()
+        if cell[0] == "None found":
+            return ''
+        return ", ".join(cell)
+
+    # Function to remove double entries from the cell.
+    def removeDouble(cell):
+        cell = cell.split(', ')
+        for i in range(len(cell)):
+            cell[i] = cell[i][:len(cell[i]) // 2]
+        return ", ".join(cell)
+
+    # Cleaning up the dataframe
+    df['Genres'] = df['Genres'].apply(cleanDivide)
+    df['Genres'] = df['Genres'].apply(removeDouble)
+    df['Studios'] = df['Studios'].apply(cleanDivide)
+    df['Producers'] = df['Producers'].apply(cleanDivide)
+    df['Licensors'] = df['Licensors'].apply(cleanDivide)
+    df['Score'] = df['Score'].apply(lambda x: x[:4])
+    df['Ranked'] = df['Ranked'].apply(lambda x: x[1:-99])
+    df['Members'] = df['Members'].str.replace(',', '')
+    df['Favorites'] = df['Favorites'].str.replace(',', '')
+    df['Popularity'] = df['Popularity'].str.replace('#', '')
+
+    return df
+
+
 def dictToPandas(data_dict_list):
     """
-    Converts the passed list of dicts into a pandas DataFrame.
+    Converts the passed list of dicts into a pandas DataFrame
+    and returns the cleaned DataFrame
 
     Parameter:
         data_dict_list: list containing scraped data dicts.
@@ -70,7 +111,8 @@ def dictToPandas(data_dict_list):
         for y in columns:
             data.append(curr.get(y, ''))
         alldata.append(data)
-    return pd.DataFrame(alldata, columns=columns)
+    dataframe = pd.DataFrame(alldata, columns=columns)
+    return cleanDataFrame(dataframe)
 
 
 def getAllAnimeData(anime_df, save_csv=True, csv_dir='Data/', sleep_time=1):
@@ -112,4 +154,3 @@ def getAllAnimeData(anime_df, save_csv=True, csv_dir='Data/', sleep_time=1):
         dataframe.to_csv(fullname, index=False)
 
     return dataframe
-

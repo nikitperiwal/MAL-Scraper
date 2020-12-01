@@ -1,31 +1,44 @@
-urllist = ["https://myanimelist.net/anime/5114/Fullmetal_Alchemist__Brotherhood/reviews",
-           "https://myanimelist.net/anime/21/One_Piece/reviews",
-           "https://myanimelist.net/anime/12521/Tentoumushi_no_Otomurai/reviews"]
+import os
+import time
+import requests
+import pandas as pd
+from bs4 import BeautifulSoup
 
 
 def cleanReview(review):
+    """
+    Cleans the html source containing the review and
+    returns a dictionary containing the review elements.
+
+    Parameter:
+        review: html-review extracted using bs4
+    Returns:
+        review_items: dict of extracted review items
+    """
+
     cleaned_review = list()
     for x in review.findAll(text=True):
         x = x.replace('\n', '').strip()
         if len(x) != 0 and x != "Preliminary":
             cleaned_review.append(x)
 
-    items = dict()
-    items['Review Date'] = cleaned_review[0]
-    items['Episodes Watched'] = cleaned_review[1]
-    items['Username'] = cleaned_review[4]
-    items['Review Likes'] = cleaned_review[8]
-    items['Overall Rating'] = cleaned_review[11]
-    items['Story Rating'] = cleaned_review[13]
-    items['Animation Rating'] = cleaned_review[15]
-    items['Sound Rating'] = cleaned_review[17]
-    items['Character Rating'] = cleaned_review[19]
-    items['Enjoyment Rating'] = cleaned_review[21]
-    items['Review'] = "\n".join(cleaned_review[22:-5])
-    return items
+    # Inserts the cleaned review into a dict.
+    review_items = dict()
+    review_items['Review Date'] = cleaned_review[0]
+    review_items['Episodes Watched'] = cleaned_review[1]
+    review_items['Username'] = cleaned_review[4]
+    review_items['Review Likes'] = cleaned_review[8]
+    review_items['Overall Rating'] = cleaned_review[11]
+    review_items['Story Rating'] = cleaned_review[13]
+    review_items['Animation Rating'] = cleaned_review[15]
+    review_items['Sound Rating'] = cleaned_review[17]
+    review_items['Character Rating'] = cleaned_review[19]
+    review_items['Enjoyment Rating'] = cleaned_review[21]
+    review_items['Review'] = "\n".join(cleaned_review[22:-5])
+    return review_items
 
 
-def cleanAllReviews(reviews):
+def getAllReviews(reviews):
     allreviews = list()
     if len(reviews) == 0:
         return []
@@ -64,7 +77,7 @@ def getAnimeReview(animename, url, rank):
     df = dictToPandas(review_list, animename, url, rank)
     df.to_csv(f'Reviews/Review {rank}_3.csv', index=False)
 
-# df = pd.read_csv('Top 10000 Anime MAL.csv')
+# df = pd.read_csv('Top 200 Anime MAL.csv')[:10]
 # for row in df.itertuples():
 #    if row[0]>3400:
 #        getAnimeReview(row[2], row[3], row[1])

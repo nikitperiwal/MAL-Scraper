@@ -54,7 +54,8 @@ def getListData(animelistlink):
     try:
         webpage = requests.get(animelistlink, timeout=10)
     except requests.exceptions.RequestException as e:
-        print(e)
+        print("Link: ", animelistlink)
+        print("Exception: ", e, "\n")
         return []
     soup = BeautifulSoup(webpage.text, features='html.parser')
     table = soup.find("table", {"class": "top-ranking-table"})
