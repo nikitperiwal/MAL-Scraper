@@ -4,6 +4,7 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 
+
 def cleanRecs(recs):
     """
     Cleans the html source containing the recommendations and
@@ -45,6 +46,7 @@ def getRecs(recs_url):
         return None
     soup = BeautifulSoup(webpage.text, features="html.parser")
 
+    # Getting the recommendation part from the webpage.
     recs = []
     for x in soup.findAll('div', {'class': 'borderClass'}):
         if len(x.findAll('div', {'class': 'borderClass'})) > 0:
@@ -92,6 +94,7 @@ def getAnimeRecs(anime_title, anime_url, save_csv=True, csv_dir='Data/Recommenda
     recs = getRecs(anime_url)
     recs_df = recstoDataFrame(recs, anime_title, anime_url)
 
+    # Saving the DataFrame
     if save_csv:
         if not os.path.exists(csv_dir):
             os.mkdir(csv_dir)
@@ -126,6 +129,7 @@ def getAllAnimeRecommendations(anime_df, save_csv=True, save_individual=False, c
         else:
             anime_dataframe = anime_dataframe.append(getAnimeRecs(title, url, save_csv=save_individual))
 
+    # Saving the DataFrame
     if save_csv:
         if not os.path.exists(csv_dir):
             os.mkdir(csv_dir)

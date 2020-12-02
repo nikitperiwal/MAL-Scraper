@@ -5,7 +5,11 @@ from anime_recommendations import getAllAnimeRecommendations
 
 
 def main():
-    anime_df = getTopAnimeData(num=10)
+    """
+    Scrapes the top-anime list, their details, reviews and recommendations.
+
+    """
+    anime_df = getTopAnimeData(num=1000)
     getAllAnimeData(anime_df)
     getAllAnimeReviews(anime_df)
     getAllAnimeRecommendations(anime_df)

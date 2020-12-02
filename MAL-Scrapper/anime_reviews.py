@@ -4,6 +4,7 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 
+
 def cleanReview(review):
     """
     Cleans the html source containing the review and
@@ -114,6 +115,7 @@ def getAnimeReview(anime_title, anime_url, save_csv=True, csv_dir='Data/Reviews/
     reviews = getAllReviews(anime_url)
     reviews_df = reviewstoDataframe(reviews, anime_title, anime_url)
 
+    # Saving the DataFrame
     if save_csv:
         if not os.path.exists(csv_dir):
             os.mkdir(csv_dir)
@@ -147,6 +149,7 @@ def getAllAnimeReviews(anime_df, save_csv=True, save_individual=False, csv_dir='
         else:
             anime_dataframe = anime_dataframe.append(getAnimeReview(title, url, save_csv=save_individual))
 
+    # Saving the DataFrame
     if save_csv:
         if not os.path.exists(csv_dir):
             os.mkdir(csv_dir)
