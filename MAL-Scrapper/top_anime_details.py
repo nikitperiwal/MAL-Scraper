@@ -4,7 +4,6 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 
-
 def cleanSidePanel(sidepanel):
     """
     Cleans the SidePanel data and stores it in a dict.

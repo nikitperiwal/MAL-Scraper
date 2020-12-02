@@ -91,7 +91,7 @@ def getTopData(anime_toplist_link, topnum=200):
     return alldata
 
 
-def getTopAnimeDataFrame(num=200, save_csv=True, csv_dir='Data/'):
+def getTopAnimeData(num=200, save_csv=True, csv_dir='Data/'):
     """
     Scrapes list of all top 'num' anime from the passed link 'anime_toplist_link'
     and returns the extracted data as a pandas DataFrame.

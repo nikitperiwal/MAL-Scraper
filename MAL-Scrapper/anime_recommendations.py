@@ -4,7 +4,6 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 
-
 def cleanRecs(recs):
     """
     Cleans the html source containing the recommendations and
@@ -135,5 +134,3 @@ def getAllAnimeRecommendations(anime_df, save_csv=True, save_individual=False, c
         anime_dataframe.to_csv(fullname, index=False)
 
     return anime_dataframe
-
-getAllAnimeRecommendations(pd.read_csv('Data/Top 200 Anime MAL.csv')[:3])

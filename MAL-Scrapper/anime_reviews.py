@@ -4,7 +4,6 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 
-
 def cleanReview(review):
     """
     Cleans the html source containing the review and
