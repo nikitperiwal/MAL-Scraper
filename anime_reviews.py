@@ -65,7 +65,7 @@ def getAllReviews(review_link):
     return allreviews
 
 
-def datatoDataframe(review_list, anime_title, anime_url):
+def reviewstoDataframe(review_list, anime_title, anime_url):
     """
     Converts the passed review_list into a pandas DataFrame.
 
@@ -113,7 +113,7 @@ def getAnimeReview(anime_title, anime_url, save_csv=True, csv_dir='Data/Reviews/
 
     anime_url = anime_url + "/reviews"
     reviews = getAllReviews(anime_url)
-    reviews_df = datatoDataframe(reviews, anime_title, anime_url)
+    reviews_df = reviewstoDataframe(reviews, anime_title, anime_url)
 
     if save_csv:
         if not os.path.exists(csv_dir):
