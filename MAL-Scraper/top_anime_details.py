@@ -4,7 +4,8 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 
-def cleanSidePanel(sidepanel):
+
+def clean_side_panel(sidepanel):
     """
     Cleans the SidePanel data and stores it in a dict.
 
@@ -25,7 +26,7 @@ def cleanSidePanel(sidepanel):
     return data
 
 
-def getAnimeDetail(animelink):
+def get_anime_detail(animelink):
     """
     Cleans the SidePanel data and stores it in a dict.
 
@@ -43,12 +44,12 @@ def getAnimeDetail(animelink):
         return None
     soup = BeautifulSoup(webpage.text, features="html.parser")
     sidepanel = soup.find("td", {"class": "borderClass"}).find('div').findAll('div')[6:]
-    data = cleanSidePanel(sidepanel)
+    data = clean_side_panel(sidepanel)
     data['Summary'] = soup.find("p", {"class": ""}).text
     return data
 
 
-def cleanDataFrame(df):
+def clean_dataframe(df):
     """
     Cleans the DataFrame passed, to make the values more readable.
 
@@ -88,7 +89,7 @@ def cleanDataFrame(df):
     return df
 
 
-def dictToPandas(data_dict_list):
+def dict_to_pandas(data_dict_list):
     """
     Converts the passed list of dicts into a pandas DataFrame
     and returns the cleaned DataFrame
@@ -111,10 +112,10 @@ def dictToPandas(data_dict_list):
             data.append(curr.get(y, ''))
         alldata.append(data)
     dataframe = pd.DataFrame(alldata, columns=columns)
-    return cleanDataFrame(dataframe)
+    return clean_dataframe(dataframe)
 
 
-def getAllAnimeData(anime_df, save_csv=True, csv_dir='Data/', sleep_time=1):
+def get_all_anime_data(anime_df, save_csv=True, csv_dir='Data/', sleep_time=1):
     """
     Scrapes details of all anime in the DataFrame passed and
     returns the scraped details as a pandas DataFrame.
@@ -134,7 +135,7 @@ def getAllAnimeData(anime_df, save_csv=True, csv_dir='Data/', sleep_time=1):
     for url, name in iterdata:
         # Delays the program so that the website do not stop responding.
         time.sleep(sleep_time)
-        res = getAnimeDetail(url)
+        res = get_anime_detail(url)
         if res is None:
             return alldata
         else:
@@ -142,7 +143,7 @@ def getAllAnimeData(anime_df, save_csv=True, csv_dir='Data/', sleep_time=1):
             res['MAL Url'] = url
             alldata.append(res)
 
-    dataframe = dictToPandas(alldata)
+    dataframe = dict_to_pandas(alldata)
 
     # Saves the csv.
     if save_csv:

@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from concurrent.futures import ThreadPoolExecutor
 
 
-def cleanTableData(table):
+def clean_table_data(table):
     """
     Cleans the table data and stores it in a list of data.
 
@@ -42,7 +42,7 @@ def cleanTableData(table):
     return alldata
 
 
-def getListData(animelistlink):
+def get_list_data(animelistlink):
     """
     Extracts the data from the top-anime webpage,
     and returns it as a list of data after cleaning.
@@ -59,10 +59,10 @@ def getListData(animelistlink):
         return []
     soup = BeautifulSoup(webpage.text, features='html.parser')
     table = soup.find("table", {"class": "top-ranking-table"})
-    return cleanTableData(table)
+    return clean_table_data(table)
 
 
-def getTopData(anime_toplist_link, topnum=200):
+def get_top_data(anime_toplist_link, topnum=200):
     """
     Scrapes list of all top 'topnum' anime from the passed link 'anime_toplist_link'
     and returns the extracted data.
@@ -81,7 +81,7 @@ def getTopData(anime_toplist_link, topnum=200):
     with ThreadPoolExecutor(max_workers=20) as executor:
         for i in range(0, topnum, 50):
             list_link = anime_toplist_link + str(i)
-            futurelist.append(executor.submit(getListData, list_link))
+            futurelist.append(executor.submit(get_list_data, list_link))
 
     # Collecting all the returned values from the threads.
     alldata = list()
@@ -91,7 +91,7 @@ def getTopData(anime_toplist_link, topnum=200):
     return alldata
 
 
-def getTopAnimeData(num=200, save_csv=True, csv_dir='Data/'):
+def get_top_anime_data(num=200, save_csv=True, csv_dir='Data/'):
     """
     Scrapes list of all top 'num' anime from the passed link 'anime_toplist_link'
     and returns the extracted data as a pandas DataFrame.
@@ -106,7 +106,7 @@ def getTopAnimeData(num=200, save_csv=True, csv_dir='Data/'):
     """
 
     anime_toplist_link = "https://myanimelist.net/topanime.php?limit="
-    animedata = getTopData(anime_toplist_link, num)
+    animedata = get_top_data(anime_toplist_link, num)
 
     # Creates the pandas DataFrame
     columns = ['Ranking', 'Anime Title', 'MAL Link', 'Airing Type and Episode',

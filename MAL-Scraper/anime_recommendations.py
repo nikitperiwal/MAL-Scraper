@@ -5,7 +5,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 
 
-def cleanRecs(recs):
+def clean_recs(recs):
     """
     Cleans the html source containing the recommendations and
     returns a dictionary containing the recommendations.
@@ -51,11 +51,11 @@ def getRecs(recs_url):
     for x in soup.findAll('div', {'class': 'borderClass'}):
         if len(x.findAll('div', {'class': 'borderClass'})) > 0:
             recs.append(x)
-    recs = cleanRecs(recs)
+    recs = clean_recs(recs)
     return recs
 
 
-def recstoDataFrame(recs_list, anime_title, anime_url):
+def recs_to_dataframe(recs_list, anime_title, anime_url):
     """
     Converts the passed recs_list into a pandas DataFrame.
 
@@ -75,7 +75,7 @@ def recstoDataFrame(recs_list, anime_title, anime_url):
     return dataframe
 
 
-def getAnimeRecs(anime_title, anime_url, save_csv=True, csv_dir='Data/Recommendation/'):
+def get_anime_recs(anime_title, anime_url, save_csv=True, csv_dir='Data/Recommendation/'):
     """
     Get Recommendations from an Anime whose details is passed,
     Stores the recommendations in a pandas DataFrame and returns it.
@@ -92,7 +92,7 @@ def getAnimeRecs(anime_title, anime_url, save_csv=True, csv_dir='Data/Recommenda
 
     anime_url = anime_url + "/userrecs"
     recs = getRecs(anime_url)
-    recs_df = recstoDataFrame(recs, anime_title, anime_url)
+    recs_df = recs_to_dataframe(recs, anime_title, anime_url)
 
     # Saving the DataFrame
     if save_csv:
@@ -106,7 +106,7 @@ def getAnimeRecs(anime_title, anime_url, save_csv=True, csv_dir='Data/Recommenda
     return recs_df
 
 
-def getAllAnimeRecommendations(anime_df, save_csv=True, save_individual=False, csv_dir='Data/'):
+def get_all_anime_recs(anime_df, save_csv=True, save_individual=False, csv_dir='Data/'):
     """
     Get Recommendations for all Anime in the dataFrame passed,
     Stores all recommendations in a pandas DataFrame and returns it.
@@ -125,9 +125,9 @@ def getAllAnimeRecommendations(anime_df, save_csv=True, save_individual=False, c
     anime_dataframe = None
     for title, url in iterdata:
         if anime_dataframe is None:
-            anime_dataframe = getAnimeRecs(title, url, save_csv=save_individual)
+            anime_dataframe = get_anime_recs(title, url, save_csv=save_individual)
         else:
-            anime_dataframe = anime_dataframe.append(getAnimeRecs(title, url, save_csv=save_individual))
+            anime_dataframe = anime_dataframe.append(get_anime_recs(title, url, save_csv=save_individual))
 
     # Saving the DataFrame
     if save_csv:
