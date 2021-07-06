@@ -1,4 +1,4 @@
-# MAL-Scrapper
+# MAL-Scraper
 A script that can scrape top anime list, their details, reviews and user recommendations from MyAnimeList.net
 
 ### MAL
